@@ -32,16 +32,15 @@
 
     document.getElementById('searchPokemon').addEventListener('click', event => {
       event.preventDefault()
-      console.log(document.getElementById('name').value)
 
-      fetch(`https://pokeapi.co/api/v2/pokemon/${document.getElementById('name').value}/`)
-        .then(r => r.json())
-        .then(pokemon => {
-          console.log(pokemon)
-          let pokeElem = document.createElement('div')
-          pokeElem.className = 'card'
-          pokeElem.style = 'width: 18rem;'
-          pokeElem.innerHTML = `
+      if (document.getElementById('name').value.length > 1) {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${document.getElementById('name').value.toLowerCase()}/`)
+          .then(r => r.json())
+          .then(pokemon => {
+            let pokeElem = document.createElement('div')
+            pokeElem.className = 'card'
+            pokeElem.style = 'width: 18rem;'
+            pokeElem.innerHTML = `
           <img 
             src="${pokemon.sprites.front_default}" 
             class="card-img-top" 
@@ -72,9 +71,17 @@
             </ul>
           </div>
         `
-          document.getElementById('pokemon').append(pokeElem)
-        })
-        .catch(e => console.log(e))
+            document.getElementById('name').value = ''
+            document.getElementById('pokemon').innerHTML = ''
+            document.getElementById('pokemon').append(pokeElem)
+          })
+          .catch(e => {
+            console.log(e)
+            alert('Pokemon not found')
+            document.getElementById('name').value = ''
+            document.getElementById('pokemon').innerHTML = ''
+          })
+      }
     })
 
 
